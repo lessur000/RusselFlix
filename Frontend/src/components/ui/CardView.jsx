@@ -6,12 +6,15 @@ import SecondButton from "./SecondButton";
 import data from "../../utils/data";
 import VideoModal from "../ui/VideoModal";
 import { GiPlayButton } from "../ui/icons";
+import castData from "../../utils/castData";
+import CastPanel from "./CastPanel";
 
 const CardView = () => {
   const { id } = useParams();
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [cast, setCast] = useState([]);
 
   useEffect(() => {
     const cardData = [...data.animeData, ...data.Movie];
@@ -20,6 +23,8 @@ const CardView = () => {
     );
     setCard(foundCard);
     setLoading(false);
+    // Dynamically get cast based on card title
+    setCast(castData[foundCard.title]);
   }, [id]);
 
   const toggleVideoModal = () => {
@@ -57,7 +62,7 @@ const CardView = () => {
         </div>
 
         {/* Content container */}
-        <div className="absolute top-0 left-0 w-full h-full flex items-center">
+        <div className="absolute top-20 left-0 w-full h-full flex items-center">
           <div className="container mx-auto px-4 text-white space-y-5">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {card.title}
@@ -78,9 +83,12 @@ const CardView = () => {
               <span className="text-yellow-400">{card.rating}</span>
             </div>
             <SecondButton onClick={toggleVideoModal} />
+            {/* Cast information */}
+            <div className="mt-8">
+            <CastPanel cast={cast} />
+            </div>
           </div>
         </div>
-
         {/* Video Preview */}
         {card.video && (
           <div
@@ -100,7 +108,7 @@ const CardView = () => {
               <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg group-hover:bg-black/50 transition-all duration-300">
                 <GiPlayButton
                   size={40}
-                  className="text-white opacity-100 group-hover:scale-110 transition-transform duration-200"
+                  className="text-white opacity-100 group-hover:scale-110 transition-transform duration-200 hidden md:block"
                 />
               </div>
             </div>
